@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:google_gemini/api_key.dart';
+import 'package:google_gemini/database/db.dart';
+import 'package:google_gemini/database/prompt_db_model.dart';
 import 'package:google_gemini/gemini_chat_bot/widgets/app_bar.dart';
 import 'package:google_gemini/gemini_chat_bot/widgets/loading_prompt.dart';
 import 'package:google_gemini/gemini_chat_bot/widgets/prompt_widget.dart';
@@ -20,11 +22,12 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
   bool loadingText = false;
   List<PromptWidget> listOfPromts = [];
   ScrollController controller = ScrollController();
+  PromptDB promptDB = PromptDB();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: geminiAppbar(loadingText),
+      appBar: geminiAppbar(loadingText, context),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -103,6 +106,16 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
       final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
       final content = [Content.text(prompt)];
       final response = await model.generateContent(content);
+      try {
+        await promptDB.putPromptToDB(Prompt(
+            id: DateTime.now().millisecondsSinceEpoch,
+            dateTime: DateTime.now(),
+            prompt: prompt,
+            result: response.text ?? 'No response'));
+      } catch (e, t) {
+        log(e.toString(), name: 'Hive error');
+        log(t.toString(), name: 'trace');
+      }
       loadingTextState(false);
       textValue(response.text);
     } catch (e, t) {
@@ -126,11 +139,13 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
 
   addPromptToList() async {
     if (promptController.text.isNotEmpty) {
+      listOfPromts.clear();
+      setState(() {});
       listOfPromts.add(PromptWidget(
           msgText: promptController.text, msgSender: '', user: true));
       geminiChat(prompt: promptController.text);
       await Future.delayed(
-        const Duration(seconds: 1),
+        const Duration(milliseconds: 500),
         () {
           promptController.text = '';
           setState(() {});
