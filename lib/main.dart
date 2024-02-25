@@ -3,6 +3,7 @@ import 'package:google_gemini/gemini_chat_bot/gemini_chat_screen.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Google Gemini',
     theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
@@ -10,4 +11,3 @@ void main() {
     home: const GeminiChatScreen(),
   ));
 }
-
