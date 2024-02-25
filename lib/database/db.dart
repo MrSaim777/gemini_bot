@@ -4,13 +4,13 @@ import 'package:hive/hive.dart';
 class PromptDB {
   final boxName = 'prompts';
   static Box<Prompt> box() => Hive.box<Prompt>('prompts');
- 
+
   Future<void> closeBox() async {
     await box().close();
   }
 
   Future<void> putPromptToDB(Prompt prompt) async {
-    await box().put(prompt.id, prompt);
+    await box().put(prompt.id.toString(), prompt);
   }
 
   Future<Prompt?> getPromptFromDB(int id) async {
