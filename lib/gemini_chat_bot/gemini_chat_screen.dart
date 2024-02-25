@@ -26,7 +26,6 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
         bottom: !loadingText
             ? null
             : PreferredSize(
-              
                 preferredSize: const Size(25, 10),
                 child: Container(
                   constraints: const BoxConstraints.expand(height: 1),
