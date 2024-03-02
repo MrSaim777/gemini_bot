@@ -113,6 +113,11 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
             prompt: prompt,
             result: response.text ?? 'No response'));
       } catch (e, t) {
+         await promptDB.putPromptToDB(Prompt(
+            id: DateTime.now().millisecondsSinceEpoch,
+            dateTime: DateTime.now(),
+            prompt: prompt,
+            result: response.text ?? 'No response'));
         log(e.toString(), name: 'Hive error');
         log(t.toString(), name: 'trace');
       }

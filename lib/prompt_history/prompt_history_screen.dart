@@ -56,17 +56,6 @@ class PromptHistoryScreen extends StatelessWidget {
                               ),
                             )),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            '$date $time',
-                            style: const TextStyle(
-                              color: Utils.kPrimaryColor,
-                              fontFamily: 'Poppins',
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                        Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             child: Material(
@@ -91,6 +80,33 @@ class PromptHistoryScreen extends StatelessWidget {
                                 ),
                               ),
                             )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '$date $time',
+                                style: const TextStyle(
+                                  color: Utils.kPrimaryColor,
+                                  fontFamily: 'Poppins',
+                                  fontSize: 15,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => box.deleteAt(index),
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    color: Utils.kDeleteBtnColor,
+                                    fontFamily: 'Poppins',
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                         const Divider()
                       ],
                     ),

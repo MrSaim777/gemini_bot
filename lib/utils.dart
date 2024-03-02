@@ -4,6 +4,8 @@ class Utils {
   static const Color kPrimaryColor = Colors.black;
   static const Color kSecondaryColor = Colors.grey;
   static const Color kWhiteColor = Colors.white;
+  static const Color kDeleteBtnColor = Colors.red;
+
 
 
   static snackBar(BuildContext context, String msg) {
