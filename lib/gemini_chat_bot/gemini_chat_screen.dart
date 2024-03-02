@@ -21,7 +21,7 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
   String text = '';
   bool loadingText = false;
   List<PromptWidget> listOfPromts = [];
-  ScrollController controller = ScrollController();
+  // ScrollController controller = ScrollController();
   PromptDB promptDB = PromptDB();
 
   @override
@@ -33,16 +33,25 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
-            child: ListView(
-              controller: controller,
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              children: [
-                !loadingText
-                    ? const SizedBox.shrink()
-                    : const LoadingResponseWidget(),
-                ...listOfPromts
-              ],
-            ),
+            child: listOfPromts.isEmpty
+                ? const Center(
+                    child: Text('Write/Speak something for response',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            color: Utils.kPrimaryColor)),
+                  )
+                : ListView(
+                    // controller: controller,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 10),
+                    children: [
+                      !loadingText
+                          ? const SizedBox.shrink()
+                          : const LoadingResponseWidget(),
+                      ...listOfPromts
+                    ],
+                  ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -100,8 +109,8 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
 
   geminiChat({required String prompt}) async {
     try {
-      controller.animateTo(100,
-          duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+      // controller.animateTo(100,
+      //     duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
       loadingTextState(true);
       final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
       final content = [Content.text(prompt)];
@@ -113,11 +122,11 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
             prompt: prompt,
             result: response.text ?? 'No response'));
       } catch (e, t) {
-         await promptDB.putPromptToDB(Prompt(
+        await promptDB.putPromptToDB(Prompt(
             id: DateTime.now().millisecondsSinceEpoch,
             dateTime: DateTime.now(),
             prompt: prompt,
-            result: response.text ?? 'No response'));
+            result: e.toString()));
         log(e.toString(), name: 'Hive error');
         log(t.toString(), name: 'trace');
       }
