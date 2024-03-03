@@ -5,6 +5,8 @@ class Utils {
   static const Color kSecondaryColor = Colors.grey;
   static const Color kWhiteColor = Colors.white;
   static const Color kDeleteBtnColor = Colors.red;
+  static const Color kMicBtnColor = Colors.green;
+
 
 
 

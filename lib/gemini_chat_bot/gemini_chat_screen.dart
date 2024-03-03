@@ -8,6 +8,8 @@ import 'package:google_gemini/gemini_chat_bot/widgets/loading_prompt.dart';
 import 'package:google_gemini/gemini_chat_bot/widgets/prompt_widget.dart';
 import 'package:google_gemini/utils.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class GeminiChatScreen extends StatefulWidget {
   const GeminiChatScreen({super.key});
@@ -23,6 +25,47 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
   List<PromptWidget> listOfPromts = [];
   // ScrollController controller = ScrollController();
   PromptDB promptDB = PromptDB();
+  SpeechToText _speechToText = SpeechToText();
+  bool _speechEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+  }
+
+  /// This has to happen only once per app
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  /// Each time to start a speech recognition session
+  void _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {
+      print('listening');
+    });
+  }
+
+  /// Manually stop the active speech recognition session
+  /// Note that there are also timeouts that each platform enforces
+  /// and the SpeechToText plugin supports setting timeouts on the
+  /// listen method.
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {
+      print('stop listening');
+    });
+  }
+
+  /// This is the callback that the SpeechToText plugin calls when
+  /// the platform returns recognized words.
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      promptController.text = result.recognizedWords;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +122,18 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
                 ),
                 Row(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Icon(
-                        Icons.mic,
-                        color: Utils.kPrimaryColor,
+                    InkWell(
+                      onTap: _speechToText.isNotListening
+                          ? _startListening
+                          : _stopListening,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Icon(
+                          Icons.mic,
+                          color: _speechToText.isNotListening
+                              ? Utils.kPrimaryColor
+                              : Utils.kMicBtnColor,
+                        ),
                       ),
                     ),
                     InkWell(
@@ -112,26 +162,29 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
       // controller.animateTo(100,
       //     duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
       loadingTextState(true);
-      final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
-      final content = [Content.text(prompt)];
-      final response = await model.generateContent(content);
+
       try {
+        final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+        final content = [Content.text(prompt)];
+        final response = await model.generateContent(content);
+        loadingTextState(false);
         await promptDB.putPromptToDB(Prompt(
             id: DateTime.now().millisecondsSinceEpoch,
             dateTime: DateTime.now(),
             prompt: prompt,
             result: response.text ?? 'No response'));
+        textValue(response.text);
       } catch (e, t) {
         await promptDB.putPromptToDB(Prompt(
             id: DateTime.now().millisecondsSinceEpoch,
             dateTime: DateTime.now(),
             prompt: prompt,
             result: e.toString()));
+        textValue(e.toString());
+        loadingTextState(false);
         log(e.toString(), name: 'Hive error');
         log(t.toString(), name: 'trace');
       }
-      loadingTextState(false);
-      textValue(response.text);
     } catch (e, t) {
       loadingTextState(false);
       log(e.toString(), name: 'Error');
