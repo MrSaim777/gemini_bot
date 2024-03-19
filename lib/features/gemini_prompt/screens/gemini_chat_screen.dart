@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:google_gemini/api_key.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_gemini/database/db.dart';
 import 'package:google_gemini/database/prompt_db_model.dart';
 import 'package:google_gemini/features/gemini_prompt/widgets/app_bar.dart';
@@ -164,7 +164,8 @@ class _GeminiChatScreenState extends State<GeminiChatScreen> {
       loadingTextState(true);
 
       try {
-        final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+        final model = GenerativeModel(
+            model: 'gemini-pro', apiKey: dotenv.env['API_KEY'] ?? "");
         final content = [Content.text(prompt)];
         final response = await model.generateContent(content);
         loadingTextState(false);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_gemini/database/db.dart';
 import 'package:google_gemini/database/prompt_db_model.dart';
 import 'package:google_gemini/features/gemini_prompt/screens/gemini_chat_screen.dart';
@@ -7,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   initHive();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
