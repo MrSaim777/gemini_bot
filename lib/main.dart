@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_gemini/database/db.dart';
 import 'package:google_gemini/database/prompt_db_model.dart';
-import 'package:google_gemini/gemini_chat_bot/gemini_chat_screen.dart';
+import 'package:google_gemini/features/gemini_prompt/screens/gemini_chat_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -18,7 +18,7 @@ Future<void> main() async {
   ));
 }
 
-initHive() async {
+Future<void> initHive() async {
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   final path = appDocumentDirectory.path;
   Hive.init(path);

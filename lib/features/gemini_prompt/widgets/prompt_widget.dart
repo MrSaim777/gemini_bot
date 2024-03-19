@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_gemini/utils.dart';
+import 'package:google_gemini/common/utils.dart';
 
 class PromptWidget extends StatelessWidget {
   final String msgText;

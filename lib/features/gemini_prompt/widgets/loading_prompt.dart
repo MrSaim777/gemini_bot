@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:google_gemini/utils.dart';
+import 'package:google_gemini/common/utils.dart';
 
 class LoadingResponseWidget extends StatelessWidget {
   const LoadingResponseWidget({

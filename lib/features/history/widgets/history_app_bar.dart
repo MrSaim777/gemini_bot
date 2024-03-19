@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_gemini/utils.dart';
+import 'package:google_gemini/common/utils.dart';
 
 AppBar geminiHistoryAppbar(BuildContext context) {
   return AppBar(

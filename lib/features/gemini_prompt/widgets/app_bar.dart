@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_gemini/prompt_history/prompt_history_screen.dart';
-import 'package:google_gemini/utils.dart';
+import 'package:google_gemini/features/history/screens/prompt_history_screen.dart';
+import 'package:google_gemini/common/utils.dart';
 
 AppBar geminiAppbar(bool loadingText, BuildContext context) {
   return AppBar(
